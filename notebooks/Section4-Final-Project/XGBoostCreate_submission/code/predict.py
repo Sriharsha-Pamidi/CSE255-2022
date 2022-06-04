@@ -81,7 +81,7 @@ for fold_i in range(len(folds)):
 
     pred_wo_abstention=(2*(_mean>0))-1
     pred_with_abstention=copy(pred_wo_abstention)
-    pred_with_abstention[_std>abs(_mean)]=0
+    pred_with_abstention[_std>abs(_mean)/2]=0
 
     out['pred_with_abstention'] = pred_with_abstention
     out['pred_wo_abstention'] = pred_wo_abstention

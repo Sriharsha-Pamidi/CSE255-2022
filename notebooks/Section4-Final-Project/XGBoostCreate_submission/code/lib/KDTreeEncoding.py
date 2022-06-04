@@ -1,5 +1,7 @@
 from numpy import *
 from numpy.random import choice
+from sklearn.decomposition import PCA
+
 class KD_tree:
     """A class that represents the whole KDtree,
     Points to the root KD_node"""
@@ -80,14 +82,25 @@ def train_encoder(files,max_images=200,tree_depth=8):
         selected_files=[files[i] for i in I]
     print('used %d images to train KDTree'%len(selected_files))
 
-    Plist=[]
-    for  i in range(len(selected_files)):
-        M=load(selected_files[i])
-        Image=M['x']
-        pixels=Image.reshape((Image.shape[0], -1)).T
+    Plist = []
+    for i in range(len(selected_files)):
+        M = load(selected_files[i])
+        Image = M['x']
+        pixels = Image.reshape((Image.shape[0], -1)).T
         Plist.append(pixels)
-    data=concatenate(Plist,axis=0)
+        
+    pArr = array(Plist) 
+    pca_obj = PCA(n_components=700)
+    all_data = pca_obj.fit_transform(pArr[:,:,0])
+    print("check")
+    
+    for i in range(1,8):
+        pca_obj = PCA(n_components=700)
+        pca_data = pca_obj.fit_transform(pArr[:,:,i])
+        all_data = dstack([all_data, pca_data])
+        print("check")
 
+    data = concatenate(list(all_data), axis=0)
     print('KDTree training data shape=',data.shape)
     
     ## train tree

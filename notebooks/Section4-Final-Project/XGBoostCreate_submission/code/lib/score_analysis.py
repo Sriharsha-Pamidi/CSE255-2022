@@ -47,11 +47,13 @@ def plot_scores(styled_logs,title=None,normalize=True, check=False):
     plt.grid(linestyle='-', linewidth='0.5', color='gray')
     plt.xlabel('Score')
     plt.ylabel('Error %')
-
+    plt.savefig("faskdj.png",)
+    
     plt.legend(handles=patches)
     if title:
         plt.title(title)
         return _mean,_std
+    
 
 def check_styled_logs(styled_logs):
     

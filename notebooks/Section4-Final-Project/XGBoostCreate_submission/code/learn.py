@@ -78,8 +78,12 @@ if __name__=='__main__':
     df.index=df['filename']
 
     ## Generate encoding tree
-    train_size,tree=train_encoder(files,max_images=500,tree_depth=depth)
+    train_size,tree=train_encoder(files,max_images=700,tree_depth=depth)
     T.mark('generated encoder tree')
+    print(train_size)
+    print("tree=",tree)
+    
+    
     ## Encode all data using encoding tree
     Enc_data=encoded_dataset(image_dir,df,tree,label_col='label')
     T.mark('encoded images')
@@ -88,6 +92,7 @@ if __name__=='__main__':
 
     _mean,_std=plot_scores(styled_logs,title='All')
     T.mark('trained trees')
+    print("check plots ?")
     
     os.makedirs('data', exist_ok=True)
     pickle_file='data/Checkpoint.pk'
