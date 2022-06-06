@@ -32,7 +32,7 @@ class timer:
 def train_boosted_trees(D):
     ### Train and test
     # set parameters for XGBoost
-    param['max_depth']=6
+    param['max_depth']=4
     param['num_round']=10
 
     ### Train on random split, urban and rural together
@@ -77,7 +77,7 @@ if __name__=='__main__':
     df.index=df['filename']
 
     ## Generate encoding tree
-    train_size,tree=train_encoder(files,max_images=600,tree_depth=depth)
+    train_size,tree=train_encoder(files,max_images=500,tree_depth=depth)
     T.mark('generated encoder tree')
 #     print(train_size)
 #     print("tree=",tree)
