@@ -127,7 +127,7 @@ class encoded_dataset:
   
         self.df=df
         self.rows=df.shape[0]
-        self.cols=2**(depth+1)+1+3
+        self.cols=2**(depth+1)+1+1
         data=zeros([self.rows,self.cols]) #code length +1 for label
 
         j=0
@@ -141,23 +141,19 @@ class encoded_dataset:
 
             label=row[label_col]*1
             
-#             data[j, -2] = row["urban"]
-            
-            try:
-                data[j, -4] = row["country"]
-            except:
-                data[j, -4] = 13.62
+#             try:
+#                 print(row['country'])
+#                 data[j, -4] = row["country"]
+#             except:
+#                 data[j, -4] = 13.62
                 
-            try:
-                data[j, -3] = row["urban"]
-            except:
-                data[j, -3] = False
+#             try:
+#                 data[j, -3] = row["nl_mean"]
+#             except:
+#                 data[j, -3] = 0.2269
                 
-            try:
-                data[j, -2] = row["nl_mean"]
-            except:
-                data[j, -2] = 0.2269
-
+                
+            data[j, -2] = row["urban"]
             data[j,-1]=label
             data[j,:-1]=V
 
