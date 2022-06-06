@@ -1,6 +1,6 @@
 We have tried various techniques to improve the XGBoost model performance provided.
 
-Hyperparameter Tuning: We have done a hyperparameter search for the XGBoost parameters like depth of tree, shrinkage parameter, etc. we are also trying to change the feature selector parameter
+Hyperparameter Tuning: We have done a hyperparameter search for the XGBoost parameters like depth of tree - 3,4,5,6, shrinkage parameter - 0.2,0.3,0.1, using different feature selectors - random, cyclic etc. we are also trying to change the feature selector parameter
 
 KDTreeEncoding: We have tried out various methods like, adding the urban feature information as well to the encoded dataset and tried applying PCA in the train encoder, instead of taking all the points we have compressed the number of features.
 
