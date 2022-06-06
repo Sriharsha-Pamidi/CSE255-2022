@@ -1,6 +1,6 @@
 param = {}
-param['max_depth']= 4   # depth of tree
-param['eta'] = 0.2      # shrinkage parameter
+param['max_depth']= 6   # depth of tree
+param['eta'] = 0.3      # shrinkage parameter
 param['verbosity'] = 0  # 0= no logging 3=max logging
 param['objective'] = 'binary:logistic'
 param['nthread'] = 7 # Number of threads used

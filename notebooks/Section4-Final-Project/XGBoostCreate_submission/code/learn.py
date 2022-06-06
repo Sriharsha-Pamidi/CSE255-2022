@@ -1,5 +1,5 @@
 from lib.KDTreeEncoding import *
-
+ 
 import xgboost as xgb
 from lib.XGBHelper import *
 from lib.XGBoost_params import *
@@ -32,7 +32,7 @@ class timer:
 def train_boosted_trees(D):
     ### Train and test
     # set parameters for XGBoost
-    param['max_depth']=2
+    param['max_depth']=4
     param['num_round']=10
 
     ### Train on random split, urban and rural together
@@ -63,7 +63,7 @@ def train_boosted_trees(D):
 if __name__=='__main__':
     poverty_dir=sys.argv[1]
     T=timer()
-    depth=8   #for KDTree
+    depth=10   #for KDTree
 
     ## load file list
     image_dir=poverty_dir+'/anon_images'
@@ -78,7 +78,7 @@ if __name__=='__main__':
     df.index=df['filename']
 
     ## Generate encoding tree
-    train_size,tree=train_encoder(files,max_images=700,tree_depth=depth)
+    train_size,tree=train_encoder(files,max_images=500,tree_depth=depth)
     T.mark('generated encoder tree')
     print(train_size)
     print("tree=",tree)
@@ -92,7 +92,6 @@ if __name__=='__main__':
 
     _mean,_std=plot_scores(styled_logs,title='All')
     T.mark('trained trees')
-    print("check plots ?")
     
     os.makedirs('data', exist_ok=True)
     pickle_file='data/Checkpoint.pk'

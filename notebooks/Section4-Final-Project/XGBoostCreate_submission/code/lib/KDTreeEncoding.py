@@ -89,18 +89,17 @@ def train_encoder(files,max_images=200,tree_depth=8):
         pixels = Image.reshape((Image.shape[0], -1)).T
         Plist.append(pixels)
         
-    pArr = array(Plist) 
-    pca_obj = PCA(n_components=700)
-    all_data = pca_obj.fit_transform(pArr[:,:,0])
-    print("check")
+#     pArr = array(Plist) 
+#     pca_obj = PCA(n_components=500)
+#     all_data = pca_obj.fit_transform(pArr[:,:,0])
     
-    for i in range(1,8):
-        pca_obj = PCA(n_components=700)
-        pca_data = pca_obj.fit_transform(pArr[:,:,i])
-        all_data = dstack([all_data, pca_data])
-        print("check")
+#     for i in range(1,8):
+#         pca_obj = PCA(n_components=500)
+#         pca_data = pca_obj.fit_transform(pArr[:,:,i])
+#         all_data = dstack([all_data, pca_data])
 
-    data = concatenate(list(all_data), axis=0)
+#     data = concatenate(list(all_data), axis=0)
+    data = concatenate(Plist, axis=0)
     print('KDTree training data shape=',data.shape)
     
     ## train tree
@@ -128,7 +127,7 @@ class encoded_dataset:
   
         self.df=df
         self.rows=df.shape[0]
-        self.cols=2**(depth+1)+1
+        self.cols=2**(depth+1)+1+3
         data=zeros([self.rows,self.cols]) #code length +1 for label
 
         j=0
@@ -141,6 +140,23 @@ class encoded_dataset:
                 V[bin2int(c)]=a
 
             label=row[label_col]*1
+            
+#             data[j, -2] = row["urban"]
+            
+            try:
+                data[j, -4] = row["country"]
+            except:
+                data[j, -4] = 13.62
+                
+            try:
+                data[j, -3] = row["urban"]
+            except:
+                data[j, -3] = False
+                
+            try:
+                data[j, -2] = row["nl_mean"]
+            except:
+                data[j, -2] = 0.2269
 
             data[j,-1]=label
             data[j,:-1]=V
