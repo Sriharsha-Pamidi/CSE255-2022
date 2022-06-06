@@ -142,16 +142,14 @@ class encoded_dataset:
             label=row[label_col]*1
             
 #             try:
-#                 print(row['country'])
 #                 data[j, -4] = row["country"]
 #             except:
-#                 data[j, -4] = 13.62
+#                 data[j, -4] = 13
                 
 #             try:
 #                 data[j, -3] = row["nl_mean"]
 #             except:
 #                 data[j, -3] = 0.2269
-                
                 
             data[j, -2] = row["urban"]
             data[j,-1]=label
