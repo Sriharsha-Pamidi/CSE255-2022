@@ -35,19 +35,26 @@ image_dir=poverty_dir+'anon_images/'
 depth=8   #for KDTree
 
 import pickle as pkl
-pickle_file='data/Checkpoint.pk'
-D=pkl.load(open(pickle_file,'rb'))
 
-## add D's elements as python variables 
-for k in D:
-    globals()[k]=D[k]
-scaling_mean=mean
-scaling_std=std
+pickle_file_urban='data/checkpoint_Urban.pk'
+pickle_file_rural='data/checkpoint_Rural.pk'
+
+D_urban=pkl.load(open(pickle_file_urban,'rb'))
+D_rural=pkl.load(open(pickle_file_rural,'rb'))
+
+d_mean_urban = D_urban['mean']
+d_std_urban=D_urban['std']
+
+d_mean_rural = D_rural['mean']
+d_std_rural=D_rural['std']
+
 
 #read out the ensemble of classifiers.
-bst_list=[x['bst'] for x in styled_logs[1]['log']]
+bst_list_urban=[x['bst'] for x in D_urban['styled_logs'][1]['log']]
+bst_list_rural=[x['bst'] for x in D_rural['styled_logs'][1]['log']]
 
-T.mark('read pickle file')
+T.mark('read pickle files')
+
 # ## Iterate over test sets
 folds=[{'in':'country_test_reduct.csv','out':'results_country.csv'},
       {'in':'random_test_reduct.csv','out':'results.csv'}]
@@ -66,30 +73,38 @@ for fold_i in range(len(folds)):
     out['urban']=test['urban']
     out['pred_wo_abstention']=0
     out.set_index('filename', inplace=True)
+    selector = out['urban']
 
     ## Encode all data using encoding tree
-    Enc_data=encoded_dataset(image_dir,out,tree,label_col='pred_wo_abstention')
+    Enc_data=encoded_dataset(image_dir,out,D_urban['tree'],label_col='pred_wo_abstention')
 
     data=to_DMatrix(Enc_data.data)
-    Preds=zeros([Enc_data.data.shape[0],len(bst_list)])
-    for i in range(len(bst_list)):
-        Preds[:,i]=bst_list[i].predict(data,output_margin=True)
-    Preds=(Preds-scaling_mean)/scaling_std # apply overall score scaling
+    Preds = zeros([Enc_data.data.shape[0],len(bst_list_urban)])
+    
+    for i in range(Enc_data.data.shape[0]):
+        if selector[i]:
+            for i in range(len(bst_list_urban)):
+                Preds[:,i]=bst_list_urban[i].predict(data,output_margin=True)
+        else:
+            for i in range(len(bst_list_rural)):
+                Preds[:,i]=bst_list_rural[i].predict(data,output_margin=True)
+    
+    Preds[selector]=(Preds[selector]-d_mean_urban)/d_std_urban # apply overall score scaling
+    Preds[~selector]=(Preds[~selector]-d_mean_rural)/d_std_rural
 
     _mean=np.mean(Preds,axis=1)
     _std=np.std(Preds,axis=1)
 
     pred_wo_abstention=(2*(_mean>0))-1
     pred_with_abstention=copy(pred_wo_abstention)
-    pred_with_abstention[1.25*_std>abs(_mean)]=0
-
+    pred_with_abstention[_std>abs(_mean)]=0
+    
     out['pred_with_abstention'] = pred_with_abstention
     out['pred_wo_abstention'] = pred_wo_abstention
-
+  
     outFile=f'data/{fold["out"]}'
     out.to_csv(outFile)
     print('\n\n'+'-'*60)
     print(outFile)
     T.mark('generated '+outFile)
-
 

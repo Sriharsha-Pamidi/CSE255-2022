@@ -6,7 +6,7 @@ param['objective'] = 'binary:logistic'
 param['nthread'] = 7 # Number of threads used
 param['eval_metric'] = ['error','logloss']
 param['feature_selector']='shuffle'
-param['early_stopping_rounds']=14
+# param['early_stopping_rounds']=14
 
 
 def param_D2L(param):

@@ -86,6 +86,7 @@ def train_encoder(files,max_images=200,tree_depth=8):
     for i in range(len(selected_files)):
         M = load(selected_files[i])
         Image = M['x']
+#         Image = Image[::2,::2,:]
         pixels = Image.reshape((Image.shape[0], -1)).T
         Plist.append(pixels)
         
@@ -110,6 +111,7 @@ def train_encoder(files,max_images=200,tree_depth=8):
 def encode_image(file,tree):
     M=load(file)
     Image=M['x']
+#     Image = Image[::2,::2,:]
     pixels=Image.reshape((Image.shape[0], -1)).T
     code=tree.calc_encoding(pixels)
     return code
@@ -127,7 +129,7 @@ class encoded_dataset:
   
         self.df=df
         self.rows=df.shape[0]
-        self.cols=2**(depth+1)+1+1
+        self.cols=2**(depth+1)+1
         data=zeros([self.rows,self.cols]) #code length +1 for label
 
         j=0
@@ -151,7 +153,7 @@ class encoded_dataset:
 #             except:
 #                 data[j, -3] = 0.2269
                 
-            data[j, -2] = row["urban"]
+#             data[j, -2] = row["urban"]
             data[j,-1]=label
             data[j,:-1]=V
 
